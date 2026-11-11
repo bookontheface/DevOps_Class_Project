@@ -1,0 +1,38 @@
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Node modules
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.bak
+
+# Database files
+*.sqlite
+*.db
+
+# Secrets and certificates
+*.pem
+*.key

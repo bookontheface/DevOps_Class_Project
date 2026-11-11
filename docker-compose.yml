@@ -1,0 +1,84 @@
+services:
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: ${DOCKERHUB_USERNAME}/electromart:frontend
+    ports:
+      - "3000:5173"
+    environment:
+      VITE_API_URL: http://localhost:5000/api
+      VITE_MIDTRANS_CLIENT_KEY: ${MIDTRANS_CLIENT_KEY}
+    depends_on:
+      - backend
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    image: ${DOCKERHUB_USERNAME}/electromart:backend
+    ports:
+      - "5000:5000"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: electromart
+      MYSQL_USER: root
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: electromart
+      DB_USER: root
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: 30d
+      PORT: 5000
+      CLIENT_URL: http://localhost:3000
+      MIDTRANS_SERVER_KEY: ${MIDTRANS_SERVER_KEY}
+      MIDTRANS_CLIENT_KEY: ${MIDTRANS_CLIENT_KEY}
+      MIDTRANS_IS_PRODUCTION: false
+      CLOUDINARY_CLOUD_NAME: Root 
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+
+
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+
+  db:
+    build: 
+      context: ./database
+      dockerfile: Dockerfile
+    image: ${DOCKERHUB_USERNAME}/electromart:database
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: electromart
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_PASSWORD}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+  watchtower:
+    image: containrrr/watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  
+    environment:
+      - DOCKER_API_VERSION=1.40
+      - TZ=Asia/Jakarta
+      - WATCHTOWER_LOG_FORMAT=logfmt
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_CLEANUP=true
+    command: --interval 10
+
+  
+      
+volumes:
+  mysql_data:
