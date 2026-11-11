@@ -1,0 +1,10 @@
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+export default function Register() {
+  const { register } = useAuth(); const navigate = useNavigate();
+  const [form, setForm] = useState({ name: '', email: '', password: '' }); const [error, setError] = useState('');
+  const submit = async e => { e.preventDefault(); setError(''); try { await register(form.name, form.email, form.password); navigate('/'); } catch (e) { setError(e.response?.data?.message || 'Unable to register'); } };
+  return <div className="auth-layout"><div className="auth-art"><div className="auth-art-content"><span className="eyebrow text-white-50">JOIN THE COMMUNITY</span><h1>Your next favorite device is waiting.</h1><p>Create an account and make every upgrade feel effortless.</p></div></div><div className="auth-panel"><div className="auth-form"><Link to="/" className="navbar-brand fw-bold fs-3">electro<span className="brand-dot">.</span></Link><h2 className="mt-5 fw-bold">Create account</h2><p className="text-secondary mb-4">It only takes a minute.</p>{error && <div className="alert alert-danger">{error}</div>}
+    <form onSubmit={submit}><label className="form-label">Full name</label><input className="form-control form-control-lg mb-3" value={form.name} onChange={e => setForm({...form,name:e.target.value})} required/><label className="form-label">Email address</label><input type="email" className="form-control form-control-lg mb-3" value={form.email} onChange={e => setForm({...form,email:e.target.value})} required/><label className="form-label">Password (min. 8 characters)</label><input type="password" minLength="8" className="form-control form-control-lg mb-4" value={form.password} onChange={e => setForm({...form,password:e.target.value})} required/><button className="btn btn-dark btn-lg w-100">Create account</button></form><p className="text-secondary mt-4 text-center">Already registered? <Link to="/login">Sign in</Link></p></div></div></div>;
+}
