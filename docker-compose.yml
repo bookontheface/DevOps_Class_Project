@@ -3,7 +3,7 @@ services:
     build: 
       context: ./frontend
       dockerfile: Dockerfile
-    image: ${DOCKERHUB_USERNAME}/electromart:frontend
+    image: ${DOCKERHUB_USERNAME}/electroshop:frontend
     ports:
       - "3000:5173"
     environment:
@@ -18,17 +18,17 @@ services:
     build: 
       context: ./backend
       dockerfile: Dockerfile
-    image: ${DOCKERHUB_USERNAME}/electromart:backend
+    image: ${DOCKERHUB_USERNAME}/electroshop:backend
     ports:
       - "5000:5000"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: electromart
+      MYSQL_DATABASE: electroshop
       MYSQL_USER: root
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       DB_HOST: db
       DB_PORT: 3306
-      DB_NAME: electromart
+      DB_NAME: electroshop
       DB_USER: root
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
@@ -53,10 +53,10 @@ services:
     build: 
       context: ./database
       dockerfile: Dockerfile
-    image: ${DOCKERHUB_USERNAME}/electromart:database
+    image: ${DOCKERHUB_USERNAME}/electroshop:database
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: electromart
+      MYSQL_DATABASE: electroshop
 
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_PASSWORD}"]
