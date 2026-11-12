@@ -4,7 +4,7 @@ WORKDIR /apps
 
 COPY package*.json ./
 
-RUN rm -rf node_modules && npm install
+RUN npm ci
 
 COPY . .
 
