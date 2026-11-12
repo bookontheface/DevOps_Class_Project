@@ -84,3 +84,4 @@ services:
       
 volumes:
   mysql_data:
+  frontend_node_modules:
